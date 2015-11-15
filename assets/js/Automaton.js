@@ -98,17 +98,25 @@ var Automaton = function () {
     -> {state:index, output:{terminal:index, state:index}}
     */
     self.setOutputTerminal = function (data) {
-        var sizeOutputs = 0;
+        var sizeOutputs = 0,
+            validate = false;
         if (data) {
             sizeOutputs = self.states[data.state].outputs.length;
             if (sizeOutputs) {
                 loopOutputs: for (var $i = 0; $i < sizeOutputs; $i++) {
                     if (self.states[data.state].outputs[$i].state == data.output.state) {
                         if (self.states[data.state].outputs[$i].terminals.indexOf(data.output.terminal) == -1) {
-                            self.states[data.state].outputs[$i].terminals.push(data.output.terminal)
+                            self.states[data.state].outputs[$i].terminals.push(data.output.terminal);
+                            validate = true;
                         }
                         break loopOutputs;
                     }
+                }
+                if (($i + 1) == sizeOutputs && !validate) {
+                    self.states[data.state].outputs.push({
+                        terminals: [data.output.terminal],
+                        state: data.output.state
+                    });
                 }
             } else {
                 self.states[data.state].outputs.push({

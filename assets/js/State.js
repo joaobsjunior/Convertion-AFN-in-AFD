@@ -3,4 +3,5 @@ var State = function () {
     self.outputs = [];
     self.start = false;
     self.end = false;
+    self.reference = [];
 };
