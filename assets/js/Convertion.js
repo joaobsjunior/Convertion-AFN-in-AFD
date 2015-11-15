@@ -1,0 +1,3 @@
+var Convertion = function (automaton) {
+
+}
