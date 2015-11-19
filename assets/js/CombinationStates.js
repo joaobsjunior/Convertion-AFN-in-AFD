@@ -1,7 +1,7 @@
 /*
+array = a,b,c
 combinations = []
 2 ^ 3 = 8 - 1 = 7
-a,b,c
 
 Level 0 - ["a","b","c"]
 combinations = ["a","b","c"]
