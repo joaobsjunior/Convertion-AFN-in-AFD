@@ -1,7 +1,8 @@
 var CombinationStates = function (statesArray) {
-    var self = this,
-        combinations = new Array(),
+    var combinations = new Array(),
+        newValue = null,
         arrayBeforeLevel = new Array(),
+        $level = 0,
         array = new Clone(statesArray),
         firstInteration = true,
         indexFirstInteration = 0,
@@ -10,10 +11,9 @@ var CombinationStates = function (statesArray) {
     array.sort();
     combinations = new Clone(array);
     arrayBeforeLevel = new Clone(array);
-    var $level = 0;
     forLevel: while ($level < arrayBeforeLevel.length) {
         forConcat: for (var $i = 0; $i < array.length; $i++) {
-            var newValue = arrayBeforeLevel[$level] + "," + array[$i];
+            newValue = arrayBeforeLevel[$level] + "," + array[$i];
             newValue = newValue.split(",");
             newValue.sort();
             newValue = newValue.join(",");
