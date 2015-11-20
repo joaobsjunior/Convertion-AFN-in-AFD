@@ -67,8 +67,9 @@ var CombinationStates = function (statesArray) {
             $level = 0;
         }
     }
-    for (var $i = 0; $i < combinations.length; $i++) {
-        combinations[$i] = combinations[$i].toString().split(",");
+    sizeValues = combinations.length;
+    for (var $i = 0; $i < sizeValues; $i++) {
+        combinations[$i] = combinations[$i].toString();
     }
     return combinations;
 }

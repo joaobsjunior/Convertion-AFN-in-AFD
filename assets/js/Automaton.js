@@ -6,13 +6,6 @@ var Automaton = function () {
     self.terminalSymbols = [];
 
     /*
-    Initialize of Method
-    */
-    self.init = function () {
-        console.log("Teste");
-    };
-
-    /*
     Reset All Datas, reseting automaton.
     */
     self.reset = function () {
@@ -95,7 +88,7 @@ var Automaton = function () {
     /*
     Add outputs of terminal in states.
     Parameter Formatter:
-    -> {state:index, output:{terminal:index, state:index}}
+    -> {state:index, output:{terminal:index, states:[index]}}
     */
     self.setOutputTerminal = function (data) {
         var sizeOutputs = 0,
@@ -104,28 +97,35 @@ var Automaton = function () {
             sizeOutputs = self.states[data.state].outputs.length;
             if (sizeOutputs) {
                 loopOutputs: for (var $i = 0; $i < sizeOutputs; $i++) {
-                    if (self.states[data.state].outputs[$i].state == data.output.state) {
-                        if (self.states[data.state].outputs[$i].terminals.indexOf(data.output.terminal) == -1) {
-                            self.states[data.state].outputs[$i].terminals.push(data.output.terminal);
-                            validate = true;
-                        }
+                    if (self.states[data.state].outputs[$i].terminal == data.output.terminal) {
+                        self.states[data.state].outputs[$i].states = data.output.states;
+                        validate = true;
                         break loopOutputs;
                     }
                 }
-                if (($i + 1) == sizeOutputs && !validate) {
+                if (!validate) {
                     self.states[data.state].outputs.push({
-                        terminals: [data.output.terminal],
-                        state: data.output.state
+                        terminal: data.output.terminal,
+                        states: data.output.states
                     });
                 }
             } else {
                 self.states[data.state].outputs.push({
-                    terminals: [data.output.terminal],
-                    state: data.output.state
+                    terminal: data.output.terminal,
+                    states: data.output.states
                 });
             }
-        } else {
-
         }
     };
+
+    /*
+    Add references to State
+    Parameter Formatter:
+    -> {state: index, reference: string}
+    */
+    self.setReferentToState = function (data) {
+        if (data) {
+            self.states[data.state].reference = data.reference;
+        }
+    }
 };
