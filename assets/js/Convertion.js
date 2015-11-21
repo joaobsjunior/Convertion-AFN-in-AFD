@@ -5,18 +5,25 @@ var Convertion = function (AFN) {
         sizeStatesAFN = AFN.states.length,
         arrayStates = [],
         finalStates = [];
+
     AFD.setStatesSize(sizeStatesAFD);
     AFD.setTerminalSymbols(AFN.terminalSymbols);
     for (var $i = 0; $i < sizeStatesAFN; $i++) {
         arrayStates.push($i);
     }
+
+    /*CALL COMBINATIONS OF STATES*/
     arrayStates = new CombinationStates(arrayStates);
+
+    /*SET REFERENCE OF STATES THE OF AFN*/
     for (var $i = 0; $i < sizeStatesAFD; $i++) {
         AFD.setReferentToState({
             state: $i,
             reference: arrayStates[$i]
         });
     }
+
+    /*SET INITIAL STATE AND SERCH FINAL IN AFN*/
     for (var $i = 0; $i < AFN.states.length; $i++) {
         if (AFN.states[$i].end) {
             finalStates.push($i);
@@ -25,12 +32,82 @@ var Convertion = function (AFN) {
             AFD.setInitalState($i);
         }
     }
-    AFD.setFinalStates(finalStates);
-    for (var $i = 0; $i < AFD.terminalSymbols.length; $i++) {
-        for (var $j = 0; $j < AFD.states.length; $j++) {
-            AFD.states[$j].outputs
+
+    /*SET FINAL STATES OF AFD*/
+    for (var $i = 0; $i < AFD.states.length; $i++) {
+        for (var $j = 0; $j < finalStates.length; $j++) {
+            if (AFD.states[$i].reference) {
+                if (AFD.states[$i].reference.toString().indexOf(finalStates[$j]) != -1) {
+                    AFD.states[$i].end = true;
+                }
+            }
         }
     }
+
+    /*Varrendo estados do AFD*/
+    for (var $i = 0; $i < AFD.states.length; $i++) {
+        /*Acessar o Terminal do estado*/
+        for (var $j = 0; $j < AFD.terminalSymbols.length; $j++) {
+            var arrayStatesCheckAFN = AFD.states[$i].reference.split(","),
+                referenceOutput = "";
+            if ($i < AFD.states.length - 1) {
+                /*Varrer do AFN os estados de referência*/
+                for (var $k = 0; $k < arrayStatesCheckAFN.length; $k++) {
+                    var arrayOutputs = AFN.states[arrayStatesCheckAFN[$k]].outputs;
+                    /*varrer terminais do AFN no estados atual de referência*/
+                    loopTerminalAFN: for (var $l = 0; $l < arrayOutputs.length; $l++) {
+                        if (arrayOutputs[$l].terminal == $j) {
+                            arrayOutputs[$l].states.sort();
+                            var statesOfOutput = arrayOutputs[$l].states;
+                            /*varrer estados de saída do terminal do AFN*/
+                            for (var $m = 0; $m < statesOfOutput.length; $m++) {
+                                if (referenceOutput.indexOf(statesOfOutput[$m]) == -1) {
+                                    if (referenceOutput) {
+                                        referenceOutput += "," + statesOfOutput[$m];
+                                    } else {
+                                        referenceOutput += statesOfOutput[$m];
+                                    }
+                                    referenceOutput = referenceOutput.split(",");
+                                    referenceOutput.sort();
+                                    referenceOutput = referenceOutput.join(",");
+                                }
+                            }
+                            break loopTerminalAFN;
+                        }
+                    }
+                }
+            }
+            /*Indentificar o estado equivalente no AFD para as saídas do AFN*/
+            for (var $n = 0; $n < AFD.states.length; $n++) {
+                if (referenceOutput == AFD.states[$n].reference) {
+                    AFD.setOutputTerminal({
+                        state: $i,
+                        output: {
+                            terminal: $j,
+                            states: [$n]
+                        }
+                    })
+                    break;
+                } else if ($n == AFD.states.length - 1) {
+                    AFD.setOutputTerminal({
+                        state: $i,
+                        output: {
+                            terminal: $j,
+                            states: [$n]
+                        }
+                    })
+                    break;
+                }
+            }
+
+        }
+    }
+
+    /*CHECK INACCESSIBLE STATES*/
+    for (var $i = 0; $i < AFD.states.length; $i++) {
+
+    }
+
     console.log("AFD:", new Clone(AFD));
-    return AFN;
+    return {};
 }
