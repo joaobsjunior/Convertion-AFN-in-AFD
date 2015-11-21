@@ -4,4 +4,5 @@ var State = function () {
     self.start = false;
     self.end = false;
     self.reference = [];
+    self.accessible = false;
 };

@@ -128,4 +128,6 @@ var Automaton = function () {
             self.states[data.state].reference = data.reference;
         }
     }
+
+
 };

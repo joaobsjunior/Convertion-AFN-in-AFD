@@ -104,10 +104,49 @@ var Convertion = function (AFN) {
     }
 
     /*CHECK INACCESSIBLE STATES*/
-    for (var $i = 0; $i < AFD.states.length; $i++) {
-
+    var stackAccesible = [0],
+        elPop = -1,
+        referenceOutput = "";
+    while (stackAccesible.length) {
+        elPop = stackAccesible.pop();
+        AFD.states[elPop].accessible = true;
+        arrayOutputs = AFD.states[elPop].outputs;
+        for (var $l = 0; $l < arrayOutputs.length; $l++) {
+            arrayOutputs[$l].states.sort();
+            statesOfOutput = arrayOutputs[$l].states;
+            /*varrer estados de saída do terminal do AFN*/
+            for (var $m = 0; $m < statesOfOutput.length; $m++) {
+                if (referenceOutput.indexOf(statesOfOutput[$m]) == -1) {
+                    if (referenceOutput) {
+                        referenceOutput += "," + statesOfOutput[$m];
+                    } else {
+                        referenceOutput += statesOfOutput[$m];
+                    }
+                    referenceOutput = referenceOutput.split(",");
+                    referenceOutput.sort();
+                    stackAccesible = stackAccesible.concat(referenceOutput);
+                    stackAccesible = new ArrayUnique(stackAccesible);
+                    referenceOutput = referenceOutput.join(",");
+                }
+            }
+        }
     }
 
-    console.log("AFD:", new Clone(AFD));
-    return {};
+    /*CHECK ACCESSIBLES STATES NOT FINAL AND*/
+    for (var $i = 0; $i < AFD.states.length; $i++) {
+        if (AFD.states[$i].accessible && !AFD.states[$i].end) {
+            AFD.states[$i].accessible = false;
+            arrayOutputs = AFD.states[$i].outputs;
+            for (var $j = 0; $j < arrayOutputs.length; $j++) {
+                statesOfOutput = arrayOutputs[$j].states;
+                for (var $k = 0; $k < statesOfOutput.length; $k++) {
+                    if (statesOfOutput[$k] != $i) {
+                        AFD.states[$i].accessible = true;
+                    }
+                }
+            }
+        }
+    }
+
+    return AFD;
 }

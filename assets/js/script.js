@@ -43,7 +43,8 @@ var App = function () {
             });
             var afn = new Clone(AFN);
             console.log("AFN:", afn);
-            var afd = new Convertion(afn);
+            var afd = new Clone(new Convertion(afn));
+            console.log("AFD:", afd);
         }
     },
     app = new App();
