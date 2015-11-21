@@ -44,22 +44,22 @@ var Convertion = function (AFN) {
         }
     }
 
-    /*Varrendo estados do AFD*/
+    /*SEARCH AFD STATE*/
     for (var $i = 0; $i < AFD.states.length; $i++) {
-        /*Acessar o Terminal do estado*/
+        /*ACCESS TERMINAL OF STATE*/
         for (var $j = 0; $j < AFD.terminalSymbols.length; $j++) {
             var arrayStatesCheckAFN = AFD.states[$i].reference.split(","),
                 referenceOutput = "";
             if ($i < AFD.states.length - 1) {
-                /*Varrer do AFN os estados de referência*/
+                /*SEARCH STATE REFERENCE OF AFN*/
                 for (var $k = 0; $k < arrayStatesCheckAFN.length; $k++) {
                     var arrayOutputs = AFN.states[arrayStatesCheckAFN[$k]].outputs;
-                    /*varrer terminais do AFN no estados atual de referência*/
+                    /*SEARCH TERMINALS IN CURRENT REFERENCE STATE*/
                     loopTerminalAFN: for (var $l = 0; $l < arrayOutputs.length; $l++) {
                         if (arrayOutputs[$l].terminal == $j) {
                             arrayOutputs[$l].states.sort();
                             var statesOfOutput = arrayOutputs[$l].states;
-                            /*varrer estados de saída do terminal do AFN*/
+                            /*SEARCH STATES OF TERMINAL OUTPUTS IN AFN*/
                             for (var $m = 0; $m < statesOfOutput.length; $m++) {
                                 if (referenceOutput.indexOf(statesOfOutput[$m]) == -1) {
                                     if (referenceOutput) {
@@ -77,7 +77,7 @@ var Convertion = function (AFN) {
                     }
                 }
             }
-            /*Indentificar o estado equivalente no AFD para as saídas do AFN*/
+            /*INDENTIFY EQUIVALENT STATE IN AFD FOR AFN OUTPUTS*/
             for (var $n = 0; $n < AFD.states.length; $n++) {
                 if (referenceOutput == AFD.states[$n].reference) {
                     AFD.setOutputTerminal({
@@ -114,7 +114,7 @@ var Convertion = function (AFN) {
         for (var $l = 0; $l < arrayOutputs.length; $l++) {
             arrayOutputs[$l].states.sort();
             statesOfOutput = arrayOutputs[$l].states;
-            /*varrer estados de saída do terminal do AFN*/
+            /*SEARCH TERMINAL OUTPUT OF STATE IN AFN*/
             for (var $m = 0; $m < statesOfOutput.length; $m++) {
                 if (referenceOutput.indexOf(statesOfOutput[$m]) == -1) {
                     if (referenceOutput) {
@@ -132,7 +132,7 @@ var Convertion = function (AFN) {
         }
     }
 
-    /*CHECK ACCESSIBLES STATES NOT FINAL AND*/
+    /*CHECK ACCESSIBLE STATES NOT FINAL AND WITHOUT ACCESS TO OTHER STATES*/
     for (var $i = 0; $i < AFD.states.length; $i++) {
         if (AFD.states[$i].accessible && !AFD.states[$i].end) {
             AFD.states[$i].accessible = false;
